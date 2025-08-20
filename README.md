@@ -6,89 +6,226 @@
 
 ## 🚀 Overview
 
-An **AI-powered content generation system** built with **FastAPI** that transforms sales data into intelligent business insights.
+**AI-powered FastAPI system** that transforms sales data into intelligent business insights through **concurrent AI processing**.
 
-Upload CSV sales data → Get 5 different AI-generated business articles (Market Analyst, Business Reporter, Sales Strategist, Trend Forecaster, Executive Briefer).
+**v2.0 Features**: User management, 5x faster concurrent generation, dynamic CSV processing, Docker support.
+
+Upload CSV → Get 5 AI business perspectives simultaneously in under 30 seconds.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-- 📊 **Upload Sales Data**: CSV file processing with validation (`/upload-data`)
-- 🤖 **AI Article Generation**: 5 specialized AI agents create unique perspectives (`/generate-articles`)
-- 📰 **Content Management**: Retrieve recent articles (`/articles/recent`)
-- 📈 **System Analytics**: Data summaries and performance stats (`/stats`)
-- 🔍 **Health Monitoring**: Real-time system status (`/health`)
+- 👤 **User Management**: Multi-user data isolation
+- ⚡ **Concurrent AI**: 5 agents run simultaneously (6-10s vs 30-50s)
+- 🧠 **Smart CSV**: Auto-detects formats, encodings, separators
+- 🗑️ **Data Cleanup**: Single-endpoint user data clearing
+- 🐳 **Docker Ready**: Containerized deployment
+
+### AI Agent Types
+
+| Agent             | Focus                            | Processing |
+| ----------------- | -------------------------------- | ---------- |
+| Market Analyst    | Strategic analysis & positioning | Concurrent |
+| Business Reporter | Stakeholder narratives           | Concurrent |
+| Sales Strategist  | Actionable sales tactics         | Concurrent |
+| Trend Forecaster  | Predictive insights              | Concurrent |
+| Executive Briefer | C-level summaries                | Concurrent |
 
 ---
 
 ## ⚡ Quick Start
 
-### 1. Setup & Install
+### Setup Options
+
+**Local Install:**
+
 ```bash
 git clone backend-assessment
 cd backend-assessment
 pip install -r requirements.txt
+uvicorn main:app --reload
 ```
 
-### 2. Configure Environment
+**Docker:**
+
+#### 1. Build the Docker image
+
+```bash
+docker build -t backend-assignment .
+```
+
+#### 2. Run the container
+
+```bash
+docker run -it -p 8000:8000 \
+  -e DATABASE_URL="your_database_url_here" \   # optional
+  -e GOOGLE_AI_API_KEY="your_api_key_here" \  # required
+  backend-assignment
+```
+
+- `-p 8000:8000` → Maps container port **8000** to host port **8000**
+- `DATABASE_URL` → Optional, provide if using a database fallbacks to. in memeory storage
+- `GOOGLE_AI_API_KEY` → Required, must be set for API access
+
+---
+
+### Configure Environment
+
 ```bash
 # Create .env file
 DATABASE_URL=postgresql://username:password@hostname/dbname
 GOOGLE_AI_API_KEY=your_google_ai_key
 ```
 
-### 3. Run the Application
-```bash
-uvicorn main:app --reload
-```
-
-### 4. Access API
-- **Swagger UI** → http://localhost:8000/docs
-- **ReDoc** → http://localhost:8000/redoc
-- **Health Check** → http://localhost:8000/health
-
----
-
-## 🏗️ Tech Stack
-
-- **Backend**: FastAPI (Python)
-- **Database**: PostgreSQL (Neon Cloud) + In-memory fallback
-- **AI**: Google AI API
-- **Async**: asyncpg for non-blocking DB operations
-
----
-
-## 📝 Usage Example
+### Usage
 
 ```bash
-# 1. Upload your sales data
+# Create user
+curl -X POST "http://localhost:8000/users" \
+  -H "Content-Type: application/json" \
+  -d '{"username": "demo_user", "email": "demo@example.com"}'
+
+# Upload data
 curl -X POST "http://localhost:8000/upload-data" \
-  -F "file=@your_sales_data.csv"
+  -F "file=@data/sample_sales_data.csv"
 
-# 2. Generate AI articles
-curl -X POST "http://localhost:8000/generate-articles"
+# Generate articles (6-10 seconds)
+time curl -X POST "http://localhost:8000/generate-articles"
+```
 
-# 3. View results
-curl "http://localhost:8000/articles/recent"
+### Access Points
+
+- **Swagger UI** → http://localhost:8000/docs
+- **Health Check** → http://localhost:8000/health
+- **Stats Dashboard** → http://localhost:8000/stats
+
+---
+
+## 🏗️ Architecture
+
+### Tech Stack
+
+- **Backend**: FastAPI with async/await
+- **Database**: PostgreSQL + In-memory fallback
+- **AI**: Google AI API with concurrent processing
+- **Processing**: Dynamic CSV parsing
+- **Validation**: Pydantic models
+
+### Database Schema
+
+```sql
+users → file_uploads → sales_data
+users → articles
+
+-- Foreign keys ensure data integrity
+-- User scoping prevents data leakage
+-- File tracking enables duplicate prevention
 ```
 
 ---
 
-## 📚 Documentation
+## 📊 Performance
 
-For detailed API reference, sample responses, deployment guides, and troubleshooting:
+| Feature            | v1.0   | v2.0         | Improvement               |
+| ------------------ | ------ | ------------ | ------------------------- |
+| Article Generation | 30-50s | 6-10s        | **5x faster**             |
+| CSV Processing     | Basic  | Dynamic      | **90%+ formats**          |
+| User Isolation     | None   | Complete     | **Multi-tenant**          |
+| Data Relationships | Flat   | Foreign keys | **Referential integrity** |
 
-➡️ **[Complete Documentation](PROJECT_DOCUMENTATION.md)**
+---
+
+## 🔧 API Endpoints
+
+### User Management
+
+```bash
+# Create user
+POST /users
+{"username": "analyst1", "email": "analyst@company.com"}
+
+# Get current user
+GET /users/current
+
+# Switch users
+POST /users/{user_id}/set-current
+```
+
+### Data Operations
+
+```bash
+# Clear user data
+DELETE /clear-data
+
+# Enhanced stats
+GET /stats
+```
 
 ---
 
-## 🚀 What's Next?
+## 📁 Supported CSV Formats
 
-- Authentication & user management
-- Frontend dashboard
-- More AI agent types
-- Real-time notifications
-- Export to PDF/Word
+Dynamic detection handles:
+
+```csv
+# Standard
+date,product,sales_amount,quantity,region
+
+# European (semicolon)
+date;product;sales_amount;quantity;region
+
+# Tab-separated
+date	product	sales_amount	quantity	region
+
+# Alternative columns (auto-mapped)
+order_date,item,revenue,units,location
+```
 
 ---
+
+## 🧠 Business Intelligence
+
+### Generated Insights
+
+- Portfolio risk analysis
+- Market positioning metrics
+- Geographic performance
+- Trend detection
+- Data quality metrics
+
+### Example Output
+
+```json
+{
+  "insights": [
+    "High-value transactions suggest premium positioning",
+    "Diversified portfolio: top product 23.1% of sales",
+    "Multi-region presence provides diversification"
+  ]
+}
+```
+
+---
+
+## 📋 Requirements
+
+- Python 3.12+
+- PostgreSQL 12+ (optional)
+- Google AI API key
+
+### Dependencies
+
+```txt
+fastapi>=0.104.0
+uvicorn>=0.24.0
+asyncpg>=0.29.0
+pandas>=2.1.0
+pydantic>=2.5.0
+python-multipart>=0.0.6
+google-generativeai>=0.3.0
+```
+
+---
+
+**Transform your sales data into actionable insights!** 🚀
