@@ -9,6 +9,27 @@ class StorageType(str, Enum):
     DATABASE = "database"
 
 
+class User(BaseModel):
+    id: int
+    username: str
+    email: str
+    created_at: datetime
+
+
+class CreateUserRequest(BaseModel):
+    username: str
+    email: str
+
+
+class FileUpload(BaseModel):
+    id: int
+    user_id: int
+    file_hash: str
+    filename: str
+    upload_date: datetime
+    record_count: int
+
+
 class SalesData(BaseModel):
     date: Optional[Date] = None
     product: str = ""
@@ -16,6 +37,8 @@ class SalesData(BaseModel):
     sales_amount: float = 0.0
     quantity: int = 0
     region: str = ""
+    user_id: Optional[int] = None
+    file_upload_id: Optional[int] = None
 
 
 class Article(BaseModel):
@@ -25,6 +48,7 @@ class Article(BaseModel):
     article_type: str
     generated_date: Date
     created_at: datetime
+    user_id: Optional[int] = None
 
 
 class DataSummary(BaseModel):
@@ -35,6 +59,7 @@ class DataSummary(BaseModel):
     unique_products: int
     unique_regions: int
     date_range: Optional[Dict[str, str]] = None
+    insights: List[str] = []
 
 
 class UploadResponse(BaseModel):
