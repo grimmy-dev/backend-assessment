@@ -1,6 +1,6 @@
 # AI Content Generation System
 
-🎥 **[Watch Demo Video](https://drive.google.com/file/d/17SQkdCyDHLHpVtNZUUNqYkMfmbFvzQSE/view?usp=drive_link)** | 📚 **[Full Documentation](PROJECT_DOCUMENTATION.md)**
+🎥 **[Watch Demo Video](https://drive.google.com/file/d/1afHOOP55WrKMq7dWaDviF0OPzIrF7sI3/view?usp=drive_link)** | 📚 **[Full Documentation](PROJECT_DOCUMENTATION.md)**
 
 ---
 
